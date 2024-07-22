@@ -4,6 +4,13 @@ import mongoose from 'mongoose';
 
 import { NotFoundError, ValidationError, } from "../utils/errors";
 
+interface ProductQueryParams {
+  
+  searchQuery?: string;
+  date?:Date;
+
+}
+
 class BusService {
   // Create a new bus with initialized two-layer seating arrangement
   async createBus(busData: IBus): Promise<IBus> {
@@ -43,11 +50,13 @@ class BusService {
   }
 
 
+
+
   //prt 2 
 
 
     // Get all buses
-    async getAllBuses(): Promise<IBus[]> {
+    async getAllBuses(params: ProductQueryParams): Promise<IBus[]> {
 
       const pipeline:any[]=[
         {
@@ -62,8 +71,60 @@ class BusService {
             'path': '$routeDetails', 
             'preserveNullAndEmptyArrays': true
           }
+        },
+        {
+          $addFields: {
+            "stops":"$routeDetails.stops.stop_name",
+            "date": "$routeDetails.stops.stop_time",
+          }
         }
       ]
+
+
+
+
+//search filter
+
+const searchFields = [
+  "stops",
+
+]
+
+    let searchFilter: any = [];
+    if (params.searchQuery) {
+
+      searchFilter = searchFields.map((field) => ({
+        [field]: {
+          $regex: params.searchQuery,
+          $options: 'i',
+        },
+      }));
+
+    }
+  
+    const filterQuery = {
+      $match: {
+        ...(searchFilter.length > 0 && { $or: searchFilter })
+
+      }
+    }
+    pipeline.push(filterQuery)
+
+// date filter 
+
+if(params.date){
+ 
+  pipeline.push({
+    $match: {
+      date: {
+        "$gte":params.date
+      }
+
+    }
+  });
+}
+
+
 
       const bus =Bus.aggregate(pipeline)
       return bus

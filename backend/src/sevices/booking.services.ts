@@ -64,9 +64,14 @@ class BookingService {
     }
 
     bus.available_seats -= passengerDetails.length;
-    console.log(bus.available_seats);
+    
     
     await bus.save();
+
+    let d1=route.stops[startStopIndex].distance_from_start
+    let d2=route.stops[endStopIndex].distance_from_start
+    let total_KM=d2-d1
+    let fare=total_KM*5  
 
     // Create booking
     const booking = new Booking({
@@ -76,7 +81,7 @@ class BookingService {
       booking_date: new Date(),
       travel_date: travelDate,
       seats_booked: passengerDetails.length,
-      total_price: passengerDetails.length * 100, // Example pricing logic
+      total_price: passengerDetails.length * fare,
       status: 'confirmed',
       seats: passengerDetails.map(detail => detail.seat),
       passenger_details: passengerDetails,
@@ -84,11 +89,12 @@ class BookingService {
       end_city:route.stops[endStopIndex]
     });
     await booking.save();
-
+   
+    console.log("total fare :",booking.total_price);
+    
     return booking;
     
   }
-
 
 
 
@@ -106,7 +112,7 @@ class BookingService {
       throw new Error('Bus or Route not found');
     }
 
-    // Validate stops
+    // pValidate stos
     const startStopIndex = route.stops.findIndex(stop => stop.stop_name === startStop);
     const endStopIndex = route.stops.findIndex(stop => stop.stop_name === endStop);
 
@@ -114,7 +120,7 @@ class BookingService {
       throw new Error('Invalid start or end stop');
     }
 
-    // Reset availability for stops after endStop
+    //Reset availability for stops after endStop
     for (let i = endStopIndex + 1; i < route.stops.length; i++) {
       const stopName = route.stops[i].stop_name;
 
@@ -123,21 +129,27 @@ class BookingService {
         bus.seating_arrangement = bus.seat_booking_status[stopName];
         bus.available_seats = bus.seating_arrangement.flat(2).filter(seat => seat === 'available').length;
       }
+      
     }
-
+   
     await bus.save();
   }
 
   // Handle booking process
   async handleBooking(bookingRequest: IBookingRequest) {
-    await this.bookSeatsFromTo(bookingRequest);
-    await this.updateAvailableSeats(
-      bookingRequest.busId,
-      bookingRequest.startStop,
-      bookingRequest.endStop,
-      bookingRequest.routeId
-    );
+    const [bookSeatsResult] = await Promise.all([
+      this.bookSeatsFromTo(bookingRequest),
+      this.updateAvailableSeats(
+        bookingRequest.busId,
+        bookingRequest.startStop,
+        bookingRequest.endStop,
+        bookingRequest.routeId
+      )
+    ]);
+  
+    return bookSeatsResult;
   }
+  
 }
 
 

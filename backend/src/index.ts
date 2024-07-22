@@ -19,7 +19,6 @@ app.use("/public/uploads",express.static(path.join(__dirname,'/public/uploads'))
 app.use(express.json());
 
 //routes
-
 app.use("/user",userRoutes)
 app.use("/bus",busRoutes)
 app.use("/routes",routeRoutes)

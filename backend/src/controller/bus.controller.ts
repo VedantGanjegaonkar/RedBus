@@ -15,7 +15,13 @@ class BusController {
   }
   async getAllBuses(req: Request, res: Response): Promise<void> {
     try {
-      const buses = await busService.getAllBuses();
+      const searchQuery: string = req.query.search as string;
+      const date: string = req.query.date as string;
+
+      const params:any={ searchQuery,date }
+      const buses = await busService.getAllBuses(params);
+
+      
       res.status(200).json(buses);
     } catch (error:any) {
       res.status(500).json({ message: error.message });
