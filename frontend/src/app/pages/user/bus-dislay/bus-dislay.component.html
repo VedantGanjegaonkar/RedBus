@@ -1,0 +1,95 @@
+<!-- bus-display.component.html -->
+<div class="container mt-4" *ngIf="bus">
+    <h2>Bus Details</h2>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Bus Number: {{ bus.bus_number }}</h5>
+        <p class="card-text"><strong>Type:</strong> {{ bus.bus_type }}</p>
+        <p class="card-text"><strong>Available Seats:</strong> {{ bus.available_seats }}</p>
+        <p class="card-text"><strong>Route:</strong> {{ bus.routeDetails.route_name }}</p>
+        <p class="card-text"><strong>From:</strong> {{ bus.routeDetails.start_point }} <strong>To:</strong> {{ bus.routeDetails.end_point }}</p>
+      </div>
+    </div>
+  
+    <h3>Seating Arrangement</h3>
+    <div class="seating-arrangement">
+      <div *ngFor="let section of bus.seating_arrangement; let sectionIndex = index" class="section mb-4">
+        <h4>Section {{ sectionIndex + 1 }}</h4>
+        <div *ngFor="let row of section; let rowIndex = index" class="d-flex justify-content-center mb-2">
+          <div *ngFor="let seat of row; let seatIndex = index" class="seat mx-1">
+            <div [ngClass]="['seat-box', getSeatColor(seat)]">
+              {{ getSeatText(seat) }}
+              <span class="seat-number">{{ getSeatNumber(sectionIndex, rowIndex, seatIndex) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#bookingModal">Book Now</button>
+  
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="bookingModalLabel">Book Seats</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="startStop" class="form-label">Start Stop</label>
+                <select id="startStop" formControlName="startStop" class="form-select">
+                  <option value="">Select start stop</option>
+                  <option *ngFor="let stop of bus.routeDetails.stops" [value]="stop.stop_name">
+                    {{stop.stop_name}}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="endStop" class="form-label">End Stop</label>
+                <select id="endStop" formControlName="endStop" class="form-select">
+                  <option value="">Select end stop</option>
+                  <option *ngFor="let stop of bus.routeDetails.stops" [value]="stop.stop_name">
+                    {{stop.stop_name}}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="travelDate" class="form-label">Travel Date</label>
+                <input type="datetime-local" id="travelDate" formControlName="travelDate" class="form-control">
+              </div>
+              <div formArrayName="passengerDetails">
+                <h6>Passenger Details</h6>
+                <div *ngFor="let passenger of passengerDetails.controls; let i = index" [formGroupName]="i" class="mb-3">
+                  <div class="row">
+                    <div class="col">
+                      <label [for]="'seat' + i" class="form-label">Seat</label>
+                      <input [id]="'seat' + i" type="text" formControlName="seat" class="form-control" placeholder="Enter seat number">
+                    </div>
+                    <div class="col">
+                      <label [for]="'gender' + i" class="form-label">Gender</label>
+                      <select [id]="'gender' + i" formControlName="gender" class="form-select">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="col-auto d-flex align-items-end">
+                      <button type="button" class="btn btn-danger" (click)="removePassenger(i)" *ngIf="passengerDetails.length > 1">Remove</button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary mt-2" (click)="addPassenger()">Add Passenger</button>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()">Book</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

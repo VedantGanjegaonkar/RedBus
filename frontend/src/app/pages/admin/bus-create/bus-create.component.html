@@ -1,0 +1,31 @@
+<div class="container mt-5">
+    <h2>Create New Bus</h2>
+    <form [formGroup]="busForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="bus_number">Bus Number:</label>
+        <input id="bus_number" type="text" formControlName="bus_number" class="form-control" placeholder="Enter bus number">
+      </div>
+    
+      <div class="form-group">
+        <label for="bus_type">Bus Type:</label>
+        <select id="bus_type" formControlName="bus_type" class="form-control">
+          <option value="">Select a type</option>
+          <option value="AC">AC</option>
+          <option value="Non-AC">Non-AC</option>
+        </select>
+      </div>
+    
+      <div class="form-group">
+        <label for="route_id">Route:</label>
+        <select id="route_id" formControlName="route_id" class="form-control">
+          <option value="">Select a route</option>
+          <option *ngFor="let route of routes" [value]="route._id">
+            {{ route.route_name }} 
+          </option>
+        </select>
+      </div>
+    
+      <button type="submit" class="btn btn-primary mt-3" [disabled]="!busForm.valid">Create Bus</button>
+    </form>
+  </div>
+  

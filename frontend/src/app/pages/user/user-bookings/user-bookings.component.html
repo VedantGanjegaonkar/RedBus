@@ -1,0 +1,54 @@
+<!-- user-bookings.component.html -->
+<div class="container mt-4">
+    <h2>My Bookings</h2>
+    
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+  
+    <div *ngIf="bookings.length === 0 && !loading && !error" class="alert alert-info" role="alert">
+      You don't have any bookings yet.
+    </div>
+  
+    <div *ngIf="bookings.length > 0 && !loading && !error">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Travel Date</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Bus Number</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr *ngFor="let booking of bookings">
+            <td>{{ booking._id }}</td>
+            <td>{{ booking.booking_date | date:'medium' }}</td>
+            <td>{{ booking.start_city.stop_name }}</td>
+            <td>{{ booking.end_city.stop_name }}</td>
+            <td>{{booking.bus_id.bus_number}}</td>
+            <td [ngClass]="{
+              'bg-success text-center': booking.status === 'confirmed',
+              'bg-warning text-center': booking.status === 'pending',
+              'bg-danger text-center': booking.status === 'cancelled'
+            }">               
+                {{ booking.status }}
+            </td>
+            <td>
+              <a [routerLink]="['/booking', booking._id]" class="btn btn-primary btn-sm">View Details</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

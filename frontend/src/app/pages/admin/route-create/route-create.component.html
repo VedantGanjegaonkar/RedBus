@@ -1,0 +1,51 @@
+<!-- route-create.component.html -->
+<div class="container w-25 mt-4">
+    <h2 class="mb-4">Create New Route</h2>
+    <form [formGroup]="routeForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="route_name" class="form-label">Route Name:</label>
+        <input id="route_name" type="text" class="form-control" formControlName="route_name">
+      </div>
+  
+      <div class="mb-3">
+        <label for="start_point" class="form-label">Start Point:</label>
+        <input id="start_point" type="text" class="form-control" formControlName="start_point">
+      </div>
+  
+      <div class="mb-3">
+        <label for="end_point" class="form-label">End Point:</label>
+        <input id="end_point" type="text" class="form-control" formControlName="end_point">
+      </div>
+  
+      <div formArrayName="stops" class="mb-3">
+        <h3>Stops</h3>
+        <button type="button" class="btn btn-secondary mb-3" (click)="addStop()">Add Stop</button>
+        
+        <div *ngFor="let stop of stops.controls; let i = index" [formGroupName]="i" class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Stop {{i + 1}}</h4>
+            <div class="mb-3">
+              <label [for]="'stop_name_' + i" class="form-label">Stop Name:</label>
+              <input [id]="'stop_name_' + i" type="text" class="form-control" formControlName="stop_name">
+            </div>
+            <div class="mb-3">
+              <label [for]="'stop_time_' + i" class="form-label">Stop Time:</label>
+              <input [id]="'stop_time_' + i" type="datetime-local" class="form-control" formControlName="stop_time">
+            </div>
+            <div class="mb-3">
+              <label [for]="'distance_from_start_' + i" class="form-label">Distance from Start:</label>
+              <input [id]="'distance_from_start_' + i" type="number" class="form-control" formControlName="distance_from_start">
+            </div>
+            <button type="button" class="btn btn-danger" (click)="removeStop(i)">Remove Stop</button>
+          </div>
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="total_distance" class="form-label">Total Distance:</label>
+        <input id="total_distance" type="number" class="form-control" formControlName="total_distance">
+      </div>
+  
+      <button type="submit" class="btn btn-primary" [disabled]="!routeForm.valid">Create Route</button>
+    </form>
+  </div>

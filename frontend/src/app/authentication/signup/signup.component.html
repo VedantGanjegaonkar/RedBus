@@ -1,0 +1,35 @@
+<div class="container mt-5">
+    <h2>Sign Up</h2>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input id="username" type="text" formControlName="username" class="form-control" placeholder="Enter username">
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input id="email" type="email" formControlName="email" class="form-control" placeholder="Enter email">
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input id="password" type="password" formControlName="password" class="form-control" placeholder="Enter password">
+      </div>
+  
+      <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input id="phone" type="text" formControlName="phone" class="form-control" placeholder="Enter phone number">
+      </div>
+  
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" formControlName="role" class="form-control">
+          <option value="">Select a role</option>
+          <option value="Admin">Admin</option>
+          <option value="User">User</option>
+        </select>
+      </div>
+  
+      <button type="submit" class="btn btn-primary mt-3" [disabled]="!signupForm.valid">Sign Up</button>
+    </form>
+    </div>

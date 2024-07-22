@@ -1,0 +1,24 @@
+<!-- bus-list.component.html -->
+<div class="container mt-4">
+    <h2>Bus List</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Bus Number</th>
+          <th>Type</th>
+          <th>Route</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bus of buses">
+          <td>{{ bus.bus_number }}</td>
+          <td>{{ bus.bus_type }}</td>
+          <td>{{ bus.route?.route_name }}</td>
+          <td>
+            <a [routerLink]="['/pages/user/bus', bus._id]" class="btn btn-primary btn-sm">View Details</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
