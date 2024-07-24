@@ -1,7 +1,8 @@
 // bus-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { BusService } from 'src/app/core/services/bus.service';
-
+import { ActivatedRoute } from '@angular/router';
+import { ProductQueryParams } from 'src/app/core/interfaces/interfaces';
 @Component({
   selector: 'app-bus-list',
   templateUrl: './bus-list.component.html',
@@ -9,15 +10,26 @@ import { BusService } from 'src/app/core/services/bus.service';
 })
 export class BusListComponent implements OnInit {
   buses: any[] = [];
+  queryParams: ProductQueryParams = {};
 
-  constructor(private busService: BusService) { }
+  constructor(
+    private busService: BusService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
-    this.loadBuses();
+    this.route.queryParams.subscribe(params => {
+      this.queryParams = {
+        from: params['from'],
+        to: params['to'],
+        date: params['date']
+      };
+      this.loadBuses();
+    });
   }
 
   loadBuses(): void {
-    this.busService.getBuses().subscribe(
+    this.busService.getBuses(this.queryParams).subscribe(
       (data) => {
         console.log(data);
         this.buses = data;

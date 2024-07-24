@@ -138,9 +138,6 @@ const searchFields = [
         }
       
       
-
-
-
 // date filter 
 
 if(params.date){

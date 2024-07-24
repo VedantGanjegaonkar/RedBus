@@ -1,30 +1,29 @@
 <div class="container mt-5">
-    <div class="jumbotron text-center">
-      <h1 class="display-4">Welcome to Bus Booking System</h1>
-      <p class="lead">Book your bus tickets easily and quickly.</p>
-    </div>
-  
-    <div class="search-section">
-      <h2 class="mb-4">Search Buses</h2>
-      <form>
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="from">From</label>
-            <input type="text" class="form-control" id="from" placeholder="Enter starting location">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="to">To</label>
-            <input type="text" class="form-control" id="to" placeholder="Enter destination">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="date">Date</label>
-            <input type="date" class="form-control" id="date">
-          </div>
-        </div>
-        <button routerLink="/pages/user/buses" type="submit" class="btn btn-primary">Search Buses</button>
-      </form>
-    </div>
+  <div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to Bus Booking System</h1>
+    <p class="lead">Book your bus tickets easily and quickly.</p>
   </div>
-  
+
+  <div class="search-section">
+    <h2 class="mb-4">Search Buses</h2>
+    <form (ngSubmit)="onSearch()">
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="from">From</label>
+          <input type="text" class="form-control" id="from" [(ngModel)]="searchParams.from" name="from" placeholder="Enter starting location">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="to">To</label>
+          <input type="text" class="form-control" id="to" [(ngModel)]="searchParams.to" name="to" placeholder="Enter destination">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="date">Date</label>
+          <input type="date" class="form-control" id="date" [(ngModel)]="searchParams.date" name="date">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Search Buses</button>
+    </form>
+  </div>
+</div>
 
 <router-outlet></router-outlet>

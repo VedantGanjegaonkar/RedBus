@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule } from '@angular/forms';
 
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
@@ -24,6 +24,8 @@ import { UserBookingsComponent } from './user-bookings/user-bookings.component';
     CommonModule,
     UserRoutingModule,
     ReactiveFormsModule,
+    FormsModule
+    
   
   ]
 })

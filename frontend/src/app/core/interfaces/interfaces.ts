@@ -19,3 +19,11 @@ export interface IBookingRequest {
     passengerDetails: { seat: string; gender: 'male' | 'female' }[];
   }
 
+  export interface ProductQueryParams {
+  
+    from?: string;
+    to?: string;
+    date?:Date;
+  
+  }
+
