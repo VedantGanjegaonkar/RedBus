@@ -15,10 +15,11 @@ class BusController {
   }
   async getAllBuses(req: Request, res: Response): Promise<void> {
     try {
-      const searchQuery: string = req.query.search as string;
+      const from: string = req.query.from as string;
+      const to: string = req.query.to as string;
       const date: string = req.query.date as string;
 
-      const params:any={ searchQuery,date }
+      const params:any={ from,date,to }
       const buses = await busService.getAllBuses(params);
 
       

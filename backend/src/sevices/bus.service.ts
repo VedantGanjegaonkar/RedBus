@@ -6,7 +6,8 @@ import { NotFoundError, ValidationError, } from "../utils/errors";
 
 interface ProductQueryParams {
   
-  searchQuery?: string;
+  from?: string;
+  to?: string;
   date?:Date;
 
 }
@@ -86,38 +87,71 @@ class BusService {
 //search filter
 
 const searchFields = [
-  "stops",
-
+  "stops"
 ]
 
     let searchFilter: any = [];
-    if (params.searchQuery) {
+    if (params.from) {
+      // console.log(params.from);
 
       searchFilter = searchFields.map((field) => ({
         [field]: {
-          $regex: params.searchQuery,
+          $regex: params.from,
           $options: 'i',
         },
       }));
 
-    }
+      console.log("this is searhc filter:",searchFilter);
+      
+    
+      const filterQuery = {
+        $match: {
+          ...(searchFilter.length > 0 && { $or: searchFilter })
   
-    const filterQuery = {
-      $match: {
-        ...(searchFilter.length > 0 && { $or: searchFilter })
+        }
+      }
+      pipeline.push(filterQuery)
 
       }
-    }
-    pipeline.push(filterQuery)
+
+      if (params.to) {
+        // console.log(params.from);
+  
+        searchFilter = searchFields.map((field) => ({
+          [field]: {
+            $regex: params.to,
+            $options: 'i',
+          },
+        }));
+  
+        console.log("this is searhc filter:",searchFilter);
+        
+      
+        const filterQuery = {
+          $match: {
+            ...(searchFilter.length > 0 && { $or: searchFilter })
+    
+          }
+        }
+        pipeline.push(filterQuery)
+  
+        }
+      
+      
+
+
 
 // date filter 
 
 if(params.date){
+  console.log("Date from params:",params.date); 
+  
  
   pipeline.push({
     $match: {
       date: {
-        "$gte":params.date
+        "$gte":new Date(params.date),
+        "$lt":new Date(params.date)
       }
 
     }

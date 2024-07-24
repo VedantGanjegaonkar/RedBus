@@ -18,7 +18,7 @@ const bookingSchema: Schema<IBooking> = new Schema({
     }
   ],
   start_city: {
-    stop_name: { type: String, required: true },
+    stop_name: { type: String, required: true },  
     stop_time: { type: Date, required: true },
     distance_from_start: { type: Number, required: true }
   },
