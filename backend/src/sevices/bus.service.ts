@@ -101,7 +101,7 @@ const searchFields = [
         },
       }));
 
-      console.log("this is searhc filter:",searchFilter);
+     // console.log("this is searhc filter:",searchFilter);
       
     
       const filterQuery = {
@@ -124,7 +124,7 @@ const searchFields = [
           },
         }));
   
-        console.log("this is searhc filter:",searchFilter);
+        //console.log("this is searhc filter:",searchFilter);
         
       
         const filterQuery = {
@@ -135,6 +135,22 @@ const searchFields = [
         }
         pipeline.push(filterQuery)
   
+        }
+        //indexing
+        if (params.from && params.to) {
+          const filterIndexQuery = {
+            $match: {
+              $expr: {
+                $gt: [
+                  { $indexOfArray: ["$stops", (params.to)] },
+                  { $indexOfArray: ["$stops", (params.from)] }
+                ]
+              }
+            }
+          };
+          console.log(JSON.stringify(filterIndexQuery));
+          
+          pipeline.push(filterIndexQuery);
         }
       
       
