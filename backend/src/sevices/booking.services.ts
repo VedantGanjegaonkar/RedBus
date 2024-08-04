@@ -40,16 +40,26 @@ class BookingService {
 
     updateOperations.$set[`seating_arrangement.${layer}.${row}.${col}`] = 'booked';
   }
+  //my experiment new 
 
-  // Prepare update for seat_booking_status
-  for (let i = startStopIndex; i < endStopIndex; i++) {
-    const stopName = route.stops[i].stop_name;
-    updateOperations.$set[`seat_booking_status.${stopName}`] = bus.seating_arrangement.map(layer =>
-      layer.map(row =>
-        row.map(seat => seat === 'booked' ? 'booked' : 'available')
-      )
-    );
+  for (let detail of passengerDetails) {
+    const [layer, row, col] = detail.seat.split('').map(Number);
+    
+    if (bus.seating_arrangement[layer][row][col] !== 'available') {
+      throw new Error(`Seat ${detail.seat} is not available`);
+    }
+
+    updateOperations.$set[`pro_seating_arrangement.${layer}.${row}.${col}`] = [startStopIndex,endStopIndex];
   }
+  // Prepare update for seat_booking_status
+  // for (let i = startStopIndex; i < endStopIndex; i++) {
+  //   const stopName = route.stops[i].stop_name;
+  //   updateOperations.$set[`seat_booking_status.${stopName}`] = bus.seating_arrangement.map(layer =>
+  //     layer.map(row =>
+  //       row.map(seat => seat === 'booked' ? 'booked' : 'available')
+  //     )
+  //   );
+  // }
 
   console.log('Update operations:', JSON.stringify(updateOperations, null, 2));
 

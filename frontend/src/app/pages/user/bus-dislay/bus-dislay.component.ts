@@ -13,6 +13,8 @@ import { BusService } from 'src/app/core/services/bus.service';
 export class BusDislayComponent implements OnInit {
   bus: any;
   bookingForm!: FormGroup;
+  from!:0
+  to!:3
 
   constructor(
     private route: ActivatedRoute,
@@ -63,8 +65,20 @@ export class BusDislayComponent implements OnInit {
     this.passengerDetails.removeAt(index);
   }
 
-  getSeatColor(status: string): string {
-    return status === 'available' ? 'bg-success' : 'bg-danger';
+  // getSeatColor(status: string): string {
+  //   return status === 'available' ? 'bg-success' : 'bg-danger';
+  // }
+
+  getSeatColor(seat:[number,number]): string {
+console.log(seat);
+
+    if(seat[0] < seat[1]){
+      
+      return 'bg-danger'
+    }else{
+      return 'bg-success'
+    }
+
   }
 
   getSeatText(status: string): string {

@@ -11,9 +11,23 @@
       </div>
     </div>
   
-    <h3>Seating Arrangement</h3>
+    <!-- <h3>Seating Arrangement</h3>
     <div class="seating-arrangement">
       <div *ngFor="let section of bus.seating_arrangement; let sectionIndex = index" class="section mb-4">
+        <h4>Section {{ sectionIndex + 1 }}</h4>
+        <div *ngFor="let row of section; let rowIndex = index" class="d-flex justify-content-center mb-2">
+          <div *ngFor="let seat of row; let seatIndex = index" class="seat mx-1">
+            <div [ngClass]="['seat-box', getSeatColor(seat)]">
+              {{ getSeatText(seat) }}
+              <span class="seat-number">{{ getSeatNumber(sectionIndex, rowIndex, seatIndex) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <h3>Seating Arrangement</h3>
+    <div class="seating-arrangement">
+      <div *ngFor="let section of bus.pro_seating_arrangement; let sectionIndex = index" class="section mb-4">
         <h4>Section {{ sectionIndex + 1 }}</h4>
         <div *ngFor="let row of section; let rowIndex = index" class="d-flex justify-content-center mb-2">
           <div *ngFor="let seat of row; let seatIndex = index" class="seat mx-1">

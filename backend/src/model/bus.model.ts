@@ -13,15 +13,23 @@ const busSchema = new Schema<IBus>({
     type: [[[String]]],     // Three-dimensional array
     default: []
   },
+  pro_seating_arrangement: {
+    type: [[[[Number]]]],     // four-dimensional array
+    default: []
+  },
   seating_gender_restrictions: {
     type: [[[String]]],
     default: []
   },
-  seat_booking_status: {
-    type: Map,
-    of: [[[String]]],
-    default: {}
+  ultra_seating_arrangement: {
+    type: [[[{ type: Map, of: [Number] }]]], // three-dimensional array containing objects with array of numbers as values
+    default: []
   }
+  // seat_booking_status: {
+  //   type: Map,
+  //   of: [[[String]]],
+  //   default: {}
+  // }
 });
 
 export default model<IBus>('Bus', busSchema);

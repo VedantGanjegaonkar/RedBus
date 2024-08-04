@@ -26,6 +26,11 @@ class BusService {
           Array.from({ length: cols }, () => 'available')
         )
       );
+      const pro_seatingArrangement: number[][][][] = Array.from({ length: layerCount }, () => 
+        Array.from({ length: rows }, () =>
+          Array.from({ length: cols }, () => [])
+        )
+      );
 
       const seatingGenderRestrictions: (string | null)[][][] = Array.from({ length: layerCount }, () => 
         Array.from({ length: rows }, () => 
@@ -38,6 +43,7 @@ class BusService {
         ...busData,
         total_seats: (rows * cols * layerCount),
         seating_arrangement: busData.seating_arrangement || seatingArrangement,
+        pro_seating_arrangement: pro_seatingArrangement,
         seating_gender_restrictions: busData.seating_gender_restrictions || seatingGenderRestrictions,
         available_seats: busData.total_seats || (rows * cols * layerCount)
       });
@@ -170,8 +176,6 @@ if(params.date){
     }
   });
 }
-
-
 
       const bus =Bus.aggregate(pipeline)
       return bus
