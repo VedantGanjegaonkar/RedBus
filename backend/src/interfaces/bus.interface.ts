@@ -4,9 +4,10 @@ interface ProSeatingArrangement {
   [index: number]: {
     [index: number]: {
       [index: number]: Map<number, number[]>;
-    }[];
-  }[];
+    };
+  };
 }
+
 
 export interface IBus extends Document {
   bus_number: string;

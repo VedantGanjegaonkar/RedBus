@@ -40,28 +40,29 @@ class BookingService {
 
     updateOperations.$set[`seating_arrangement.${layer}.${row}.${col}`] = 'booked';
   }
-  //my experiment new 
+  //function to update ultra_seating_arrangement by adding key and newArray=>[startStopIndex,endStopIndex] in object
 
   for (let detail of passengerDetails) {
-    const [layer, row, col] = detail.seat.split('').map(Number);
     
-    if (bus.seating_arrangement[layer][row][col] !== 'available') {
-      throw new Error(`Seat ${detail.seat} is not available`);
-    }
+    const [layer, row, col] = detail.seat.split('').map(Number);
+    const seatingObject = bus.ultra_seating_arrangement[layer]?.[row]?.[col] || new Map();
+    const currentMaxKey = seatingObject.size > 0 ? Math.max(...Array.from(seatingObject.keys())) : -1;
+    const newKey = currentMaxKey + 1;
 
-    updateOperations.$set[`pro_seating_arrangement.${layer}.${row}.${col}`] = [startStopIndex,endStopIndex];
+    console.log("currentMaxKey:",currentMaxKey);
+    
+    seatingObject.set(newKey, [startStopIndex, endStopIndex]);
+    console.log("seatingObject:",seatingObject);
+    
+    
+    // if (bus.seating_arrangement[layer][row][col] !== 'available') {
+    //   throw new Error(`Seat ${detail.seat} is not available`);
+    // }
+
+    updateOperations.$set[`ultra_seating_arrangement.${layer}.${row}.${col}`] =seatingObject;
   }
-  // Prepare update for seat_booking_status
-  // for (let i = startStopIndex; i < endStopIndex; i++) {
-  //   const stopName = route.stops[i].stop_name;
-  //   updateOperations.$set[`seat_booking_status.${stopName}`] = bus.seating_arrangement.map(layer =>
-  //     layer.map(row =>
-  //       row.map(seat => seat === 'booked' ? 'booked' : 'available')
-  //     )
-  //   );
-  // }
 
-  console.log('Update operations:', JSON.stringify(updateOperations, null, 2));
+  console.log('Update operations:', JSON.stringify(updateOperations, null, 3));
 
   // Apply updates to the bus document
   const updatedBus = await Bus.findByIdAndUpdate(

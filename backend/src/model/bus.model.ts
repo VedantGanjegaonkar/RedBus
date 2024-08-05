@@ -22,9 +22,10 @@ const busSchema = new Schema<IBus>({
     default: []
   },
   ultra_seating_arrangement: {
-    type: [[[{ type: Map, of: [Number] }]]], // three-dimensional array containing objects with array of numbers as values
-    default: []
-  }
+    type: Map,
+    of: Map,
+    default: {}
+  },
   // seat_booking_status: {
   //   type: Map,
   //   of: [[[String]]],
