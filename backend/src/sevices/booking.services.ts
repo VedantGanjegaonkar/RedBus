@@ -2,7 +2,7 @@ import { IBookingRequest } from './interface';
 import mongoose from 'mongoose';
 import { Route, Bus, Booking } from '../model';
 import { NotFoundError, ValidationError } from '../utils/errors';
-
+import { UltraSeatingElement } from '../interfaces/bus.interface';
 
 class BookingService {
   async bookSeatsFromTo(bookingRequest: IBookingRequest): Promise<any> {
@@ -34,35 +34,66 @@ class BookingService {
   for (let detail of passengerDetails) {
     const [layer, row, col] = detail.seat.split('').map(Number);
     
-    if (bus.seating_arrangement[layer][row][col] !== 'available') {
-      throw new Error(`Seat ${detail.seat} is not available`);
-    }
-
-    updateOperations.$set[`seating_arrangement.${layer}.${row}.${col}`] = 'booked';
-  }
-  //function to update ultra_seating_arrangement by adding key and newArray=>[startStopIndex,endStopIndex] in object
-
-  for (let detail of passengerDetails) {
-    
-    const [layer, row, col] = detail.seat.split('').map(Number);
-    const seatingObject = bus.ultra_seating_arrangement[layer]?.[row]?.[col] || new Map();
-    const currentMaxKey = seatingObject.size > 0 ? Math.max(...Array.from(seatingObject.keys())) : -1;
-    const newKey = currentMaxKey + 1;
-
-    console.log("currentMaxKey:",currentMaxKey);
-    
-    seatingObject.set(newKey, [startStopIndex, endStopIndex]);
-    console.log("seatingObject:",seatingObject);
-    
-    
     // if (bus.seating_arrangement[layer][row][col] !== 'available') {
     //   throw new Error(`Seat ${detail.seat} is not available`);
     // }
 
-    updateOperations.$set[`ultra_seating_arrangement.${layer}.${row}.${col}`] =seatingObject;
+    updateOperations.$set[`seating_arrangement.${layer}.${row}.${col}`] = 'booked';
   }
 
+
+  //pro seating 
+  for (let detail of passengerDetails) {
+    const [layer, row, col] = detail.seat.split('').map(Number);
+    const oneZeroZero = bus.pro_seating_arrangement[layer][row][col]|| [[]] // [[1,3],[3,5]] or [[]]
+
+    console.log("oneZeroZero:", bus.pro_seating_arrangement[layer][row][col]);
+    
+
+    let stops=[startStopIndex,endStopIndex]
+
+    
+    oneZeroZero.push(stops)
+  
+
+    updateOperations.$set[`pro_seating_arrangement.${layer}.${row}.${col}`] = oneZeroZero
+  }
+
+
+
+
+
+
+  //function to update ultra_seating_arrangement
+
+  // for (let detail of passengerDetails) {
+
+  //   const [layer, row, col] = detail.seat.split('').map(Number);
+
+
+  //   const seatingObject = bus.ultra_seating_arrangement[layer]?.[row]?.[col] || new Map();
+  //   const currentMaxKey = seatingObject.size > 0 ? Math.max(...Array.from(seatingObject.keys())) : -1;
+  //   console.log("currentMaxKey:",currentMaxKey);
+
+  //   const newKey = currentMaxKey + 1;
+
+  //   seatingObject.set(newKey, [startStopIndex, endStopIndex]);
+  //   console.log("seatingObject from DB:",seatingObject);
+  //   // let result=this.mapToObject(seatingObject)
+  
+  //   //seatingObject type look like this {0:[2,3]}
+
+  //   updateOperations.$set[`ultra_seating_arrangement.${layer}.${row}.${col}`] = {1:[4,5]};
+  // }
+
   console.log('Update operations:', JSON.stringify(updateOperations, null, 3));
+
+
+
+
+
+
+
 
   // Apply updates to the bus document
   const updatedBus = await Bus.findByIdAndUpdate(
@@ -75,7 +106,7 @@ class BookingService {
     throw new Error('Failed to update bus');
   }
 
-  console.log('Updated bus:', updatedBus);
+ // console.log('Updated bus:', updatedBus);
 
   let d1 = route.stops[startStopIndex].distance_from_start;
   let d2 = route.stops[endStopIndex].distance_from_start;
@@ -99,7 +130,7 @@ class BookingService {
   });
   await booking.save();
 
-  console.log("total fare:", booking.total_price);
+  //console.log("total fare:", booking.total_price);
   
   return booking;
 }
@@ -130,6 +161,8 @@ async updateAvailableSeats(
   await Bus.findByIdAndUpdate(busId, { available_seats: availableSeats });
 }
 
+
+
 async handleBooking(bookingRequest: IBookingRequest): Promise<any> {
   const booking = await this.bookSeatsFromTo(bookingRequest);
   await this.updateAvailableSeats(
@@ -153,6 +186,14 @@ private recalculateAvailableSeats(bus: any): number {
     }
   }
   return availableSeats;
+}
+
+ mapToObject<K extends number, V>(map: Map<K, V>): Record<K, V> {
+  const obj = {} as Record<K, V>;
+  map.forEach((value, key) => {
+      obj[key] = value;
+  });
+  return obj;
 }
   
 }

@@ -12,9 +12,10 @@ import { BusService } from 'src/app/core/services/bus.service';
 })
 export class BusDislayComponent implements OnInit {
   bus: any;
+  
   bookingForm!: FormGroup;
-  from!:0
-  to!:3
+  from!:2
+  to!:4
 
   constructor(
     private route: ActivatedRoute,
@@ -64,21 +65,38 @@ export class BusDislayComponent implements OnInit {
   removePassenger(index: number): void {
     this.passengerDetails.removeAt(index);
   }
+   isSeatAvailableFromTo(seat: number[][], from: number, to: number):boolean {
+    let flag:boolean=true
+
+    // if (seat.length === 0) {
+    //   flag= true;
+    // }
+  
+      
+      for (let i = 0; i < seat.length; i++) {
+        const [start, end] = seat[i];
+        
+        if (!(to < start || from > end)) {
+          flag= false;
+        }
+      }
+    
+  
+  return flag
+  }
 
   // getSeatColor(status: string): string {
   //   return status === 'available' ? 'bg-success' : 'bg-danger';
   // }
 
-  getSeatColor(seat:[number,number]): string {
-console.log(seat);
+  getSeatColor(seat:number[][]): string {    //seat => [[0,2],[5,6]] or [] 
 
-    if(seat[0] < seat[1]){
+    if(this.isSeatAvailableFromTo(seat,2,5)){
       
-      return 'bg-danger'
-    }else{
       return 'bg-success'
+    }else{
+      return 'bg-danger'
     }
-
   }
 
   getSeatText(status: string): string {

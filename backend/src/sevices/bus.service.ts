@@ -26,7 +26,7 @@ class BusService {
           Array.from({ length: cols }, () => 'available')
         )
       );
-      const pro_seatingArrangement: number[][][][] = Array.from({ length: layerCount }, () => 
+      const pro_seatingArrangement: number[][][][][] = Array.from({ length: layerCount }, () => 
         Array.from({ length: rows }, () =>
           Array.from({ length: cols }, () => [])
         )
