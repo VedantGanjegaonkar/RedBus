@@ -14,8 +14,8 @@ export class BusDislayComponent implements OnInit {
   bus: any;
   
   bookingForm!: FormGroup;
-  from!:2
-  to!:4
+  from:number = 1;
+  to:number = 4;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,11 +72,10 @@ export class BusDislayComponent implements OnInit {
     //   flag= true;
     // }
   
-      
       for (let i = 0; i < seat.length; i++) {
         const [start, end] = seat[i];
         
-        if (!(to < start || from > end)) {
+        if ((from > start && from < end) || (to > start && to < end) || (from <= start && to >= end)) {
           flag= false;
         }
       }
@@ -91,7 +90,8 @@ export class BusDislayComponent implements OnInit {
 
   getSeatColor(seat:number[][]): string {    //seat => [[0,2],[5,6]] or [] 
 
-    if(this.isSeatAvailableFromTo(seat,2,5)){
+    if(this.isSeatAvailableFromTo(seat,this.from,this.to)){
+      
       
       return 'bg-success'
     }else{
