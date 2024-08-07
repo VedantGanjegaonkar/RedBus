@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BusService } from 'src/app/core/services/bus.service';
+import { ProductQueryParams } from 'src/app/core/interfaces/interfaces';
 
 @Component({
   selector: 'app-bus-dislay',
@@ -12,10 +13,11 @@ import { BusService } from 'src/app/core/services/bus.service';
 })
 export class BusDislayComponent implements OnInit {
   bus: any;
-  
   bookingForm!: FormGroup;
-  from:number = 1;
-  to:number = 4;
+  queryParams: ProductQueryParams = {};
+
+  from!:number;
+  to!:number;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,15 +28,34 @@ export class BusDislayComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const busId = params['id'];
+      this.queryParams = {
+        from: params['from'],
+        
+        to: params['to'],
+        date: params['date']
+      };
       this.loadBus(busId);
     });
     this.initBookingForm();
+    
   }
+
+  // fromToload(startStop:string,endStop:string){
+
+  // this.from = this.bus.routeDetails.stops.findIndex(stop => stop.stop_name === startStop);
+  // this.to = this.bus.routeDetails.stops.findIndex(stop => stop.stop_name === endStop);
+
+  // }
 
   loadBus(id: string): void {
     this.busService.getBusById(id).subscribe(
       (data) => {
+        console.log("bus data :",data);
+        
         this.bus = data[0];
+        this.from = data[0].routeDetails.stops.findIndex((stop: { stop_name: string | undefined; }) => stop.stop_name === this.queryParams.from);
+        this.to = data[0].routeDetails.stops.findIndex((stop: { stop_name: string | undefined; }) => stop.stop_name === this.queryParams.to);
+        
       },
       (error) => {
         console.error('Error fetching bus details:', error);
@@ -42,10 +63,12 @@ export class BusDislayComponent implements OnInit {
     );
   }
   initBookingForm(): void {
+    const now = new Date();
+    const formattedDate = now.toISOString().slice(0, 16);
     this.bookingForm = this.fb.group({
-      startStop: ['', Validators.required],
-      endStop: ['', Validators.required],
-      travelDate: ['', Validators.required],
+      startStop: [this.queryParams.from, Validators.required],
+      endStop: [this.queryParams.to, Validators.required],
+      travelDate: [formattedDate, Validators.required],
       passengerDetails: this.fb.array([])
     });
     this.addPassenger(); // Add one passenger by default

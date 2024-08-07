@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { BusService } from 'src/app/core/services/bus.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProductQueryParams } from 'src/app/core/interfaces/interfaces';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-bus-list',
   templateUrl: './bus-list.component.html',
@@ -14,7 +16,8 @@ export class BusListComponent implements OnInit {
 
   constructor(
     private busService: BusService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -38,5 +41,9 @@ export class BusListComponent implements OnInit {
         console.error('Error fetching buses:', error);
       }
     );
+  }
+
+  viewDetails(busId: string): void {
+    this.router.navigate(['/pages/user/bus', busId,this.queryParams]);
   }
 }
