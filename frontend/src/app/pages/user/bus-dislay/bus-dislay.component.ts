@@ -122,10 +122,14 @@ export class BusDislayComponent implements OnInit {
     }
   }
 
-  getSeatText(status: string): string {
-    return status === 'available' ? 'A' : 'B';
-  }
+  getSeatText(seat:number[][]): string {    //seat => [[0,2],[5,6]] or [] 
 
+    if(this.isSeatAvailableFromTo(seat,this.from,this.to)){
+      return 'A'
+    }else{
+      return 'B'
+    }
+  }
   getSeatNumber(sectionIndex: number, rowIndex: number, seatIndex: number): string {
     return `${sectionIndex}${rowIndex}${seatIndex}`;
   }

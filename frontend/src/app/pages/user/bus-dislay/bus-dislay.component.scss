@@ -30,7 +30,22 @@
     margin: 0 auto;
   }
   
-  .seat-legend .seat-box {
+  .seat-legend .seat-box {  
     width: 30px;
     height: 30px;
   }
+
+  .modal.right .modal-dialog {
+    position: fixed;
+    margin: auto;
+    width: 300px; /* Adjust the width as needed */
+    height: 100%;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.modal.right .modal-content {
+    height: 100%;
+    overflow-y: auto;
+}
