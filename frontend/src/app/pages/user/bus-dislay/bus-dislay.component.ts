@@ -1,6 +1,8 @@
 // templateUrl: './bus-dislay.component.html',
 
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import * as bootstrap from 'bootstrap';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BusService } from 'src/app/core/services/bus.service';
@@ -62,7 +64,7 @@ export class BusDislayComponent implements OnInit {
       }
     );
   }
-  initBookingForm(): void {
+  initBookingForm() {
     const now = new Date();
     const formattedDate = now.toISOString().slice(0, 16);
     this.bookingForm = this.fb.group({
@@ -71,7 +73,7 @@ export class BusDislayComponent implements OnInit {
       travelDate: [formattedDate, Validators.required],
       passengerDetails: this.fb.array([])
     });
-    this.addPassenger(); // Add one passenger by default
+    //this.addPassenger(); // Add one passenger by default
   }
   get passengerDetails(): FormArray {
     return this.bookingForm.get('passengerDetails') as FormArray;
@@ -80,7 +82,7 @@ export class BusDislayComponent implements OnInit {
   addPassenger(): void {
     const passenger = this.fb.group({
       seat: ['', Validators.required],
-      gender: ['', Validators.required]
+      gender: ['male', Validators.required]
     });
     this.passengerDetails.push(passenger);
   }
@@ -132,6 +134,22 @@ export class BusDislayComponent implements OnInit {
   }
   getSeatNumber(sectionIndex: number, rowIndex: number, seatIndex: number): string {
     return `${sectionIndex}${rowIndex}${seatIndex}`;
+  }
+
+  emitSeatNo(sectionIndex:number, rowIndex:number, seatIndex:number){
+  
+    const seatNumber=this.getSeatNumber(sectionIndex, rowIndex, seatIndex);
+    console.log(seatNumber);
+
+    this.addPassenger();
+      const lastPassengerIndex = this.passengerDetails.length - 1;
+      this.passengerDetails.at(lastPassengerIndex).get('seat')?.setValue(seatNumber);
+
+    const myModal = new bootstrap.Modal(document.getElementById('bookingModal') as Element);
+   myModal.show();
+    
+  
+    
   }
 
   onSubmit(): void {
